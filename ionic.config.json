@@ -1,5 +1,7 @@
 {
-  "name": "appQrCode",
-  "integrations": {},
+  "name": "qrscan",
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

@@ -1,17 +1,24 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="dark">
     <ion-title>
-      Tab 1
+      QR Code Scanner
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" color="medium" class="ion-justify-content-center">
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+
 </ion-content>
+
+<div class="screen">
+  <div class="scan">
+    <img id="logo" src="assets/logo.png">
+  </div>
+</div>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-button expand="block" color="danger" (click)="lerQRCode()"> ESCANEAR </ion-button>
+  </ion-toolbar>
+</ion-footer>
