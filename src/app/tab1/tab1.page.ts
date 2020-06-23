@@ -1,71 +1,82 @@
 import { Component } from '@angular/core';
+import { Dialogs } from '@ionic-native/dialogs/ngx';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
-import { AlertController, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { HistoricoService } from '../services/historico.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
-})
+})  
 export class Tab1Page {
-
-  public scanner: any;
-
-  public body: HTMLElement;
+  qrScan: any;
+  public corpoPagina: HTMLElement;
   public img: HTMLElement;
+  public scanner: any;
+  public resultado: string;
+  public link = false
+  public texto: string;
 
-  constructor(private qrScanner: QRScanner, public alertController: AlertController, public platform: Platform) {
-    this.platform.backButton.subscribeWithPriority(0, () => {
+  constructor(private qrScanner: QRScanner,
+              private dialogs: Dialogs, 
+              public platform: Platform, 
+              private screenOrientation: ScreenOrientation,
+              public historicoSercice: HistoricoService){ 
 
-      this.body.style.opacity = "1";
+    this.platform.backButton.subscribeWithPriority(0, ()=>{
+
+      this.corpoPagina.style.opacity = "1  ";
       this.img.style.opacity = "1";
+
+      this.resultado = null;
+      this.link = false;
 
       this.qrScanner.hide();
       this.scanner.unsubscribe();
     });
+
+    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
   }
 
-  public lerQRCode() {
-
-    this.body = document.getElementsByTagName("ion-content")[0] as HTMLElement;
-
-    this.img = document.getElementById('logo') as HTMLElement;
-
+  public lerQRCode(){
     this.qrScanner.prepare()
-      .then((status: QRScannerStatus) => {
-        if (status.authorized) {
-          this.body.style.opacity = "0";
-          this.img.style.opacity = "0";
-          this.qrScanner.show();
-          this.scanner = this.qrScanner.scan().subscribe((text: string) => {
-            console.log('Scanned something', text);
+    .then((status: QRScannerStatus) => {
+      if (status.authorized) {
+        this.qrScanner.show();
+        this.corpoPagina = document.getElementsByTagName('ion-content')[0] as HTMLElement;
+        this.corpoPagina.style.opacity = "0";
+        this.img = document.getElementById("logo") as HTMLElement;
+        this.img.style.opacity = "0";
+        this.scanner = this.qrScanner.scan().subscribe((text: string) => {
+          this.verificaLink(text['result']);
+          this.resultado = (text['result']);
+          this.corpoPagina.style.opacity = "1  ";
+          this.img.style.opacity = "1";
+          this.qrScanner.hide();
+          this.scanner.unsubscribe();
+        });
 
-            this.presentAlert(text);
-
-            this.body.style.opacity = "1";
-            this.img.style.opacity = "1";
-
-            this.qrScanner.hide();
-            this.scanner.unsubscribe();
-          });
-
-        } else if (status.denied) {
-        } else {
-        }
-      })
-      .catch((e: any) => console.log('Error is', e));
-
+      } else if (status.denied) {
+      } else {
+      }
+    })
+    .catch((e: any) => console.log('Error is', e)); 
   }
 
-  async presentAlert(text) {
-    const alert = await this.alertController.create({
-      header: 'Leitor de QRCode',
-      subHeader: 'Resultado:',
-      message: text,
-      buttons: ['OK']
-    });
+  public verificaLink(texto: string) {
+    const inicio = texto.substring(0, 4);
+    console.log(inicio);
+    if (inicio == "www." || inicio == "http"){
+      this.link = true;
+    } else {
+      this.link = false;
+    }
+  }
 
-    await alert.present();
+  ngOnInit() {
   }
 
 }

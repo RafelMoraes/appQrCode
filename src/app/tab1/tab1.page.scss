@@ -8,29 +8,19 @@
 }
 
 .scan {
-    height: calc(99vw - 15%);
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 70%;
-    padding: 30px;
+    position: relative;
+    height: calc(99vw - 15%);
     border: 4px dashed #ff0000;
+    padding: 30px;
     border-radius: 10px;
 
-    img {
+    img{
         height: 90%;
-        background-color: #fff;
+        //background-color: #ffffff;
         border-radius: 10px;
-    }
-}
-
-
-ion-row {
-    height: 100%;
-
-    ion-col {
-        display: flex;
-        justify-content: center;
     }
 }
